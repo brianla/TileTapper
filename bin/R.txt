@@ -435,8 +435,14 @@ int string abc_searchview_description_submit 0x7f060027
 int string abc_searchview_description_voice 0x7f060028
 int string abc_shareactionprovider_share_with 0x7f06002c
 int string abc_shareactionprovider_share_with_application 0x7f06002b
-int string action_settings 0x7f06002f
-int string app_name 0x7f06002d
+int string achievement_casual 0x7f06002f
+int string achievement_hardcore 0x7f060030
+int string achievement_havng_fun 0x7f060032
+int string achievement_newbie 0x7f06002e
+int string achievement_pro 0x7f060031
+int string action_settings 0x7f060035
+int string app_id 0x7f06002d
+int string app_name 0x7f060033
 int string auth_client_needs_enabling_title 0x7f060001
 int string auth_client_needs_installation_title 0x7f060002
 int string auth_client_needs_update_title 0x7f060003
@@ -468,7 +474,7 @@ int string common_google_play_services_update_text 0x7f060013
 int string common_google_play_services_update_title 0x7f060012
 int string common_signin_button_text 0x7f06001d
 int string common_signin_button_text_long 0x7f06001e
-int string hello_world 0x7f06002e
+int string hello_world 0x7f060034
 int string wallet_buy_button_place_holder 0x7f06001f
 int style AppBaseTheme 0x7f050088
 int style AppTheme 0x7f050089

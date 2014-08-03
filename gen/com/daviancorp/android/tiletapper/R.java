@@ -1540,8 +1540,14 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f06002b;
-        public static final int action_settings=0x7f06002f;
-        public static final int app_name=0x7f06002d;
+        public static final int achievement_casual=0x7f06002f;
+        public static final int achievement_hardcore=0x7f060030;
+        public static final int achievement_havng_fun=0x7f060032;
+        public static final int achievement_newbie=0x7f06002e;
+        public static final int achievement_pro=0x7f060031;
+        public static final int action_settings=0x7f060035;
+        public static final int app_id=0x7f06002d;
+        public static final int app_name=0x7f060033;
         public static final int auth_client_needs_enabling_title=0x7f060001;
         public static final int auth_client_needs_installation_title=0x7f060002;
         public static final int auth_client_needs_update_title=0x7f060003;
@@ -1637,7 +1643,7 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f06001e;
-        public static final int hello_world=0x7f06002e;
+        public static final int hello_world=0x7f060034;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */
