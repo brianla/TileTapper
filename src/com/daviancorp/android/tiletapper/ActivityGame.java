@@ -17,7 +17,7 @@ public class ActivityGame extends AndroidGame {
 			Assets.load(this);
 			firstTimeCreate = false;
 		}
-
+		
 		return new SplashLoadingScreen(this);
 
 	}
