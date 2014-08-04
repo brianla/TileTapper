@@ -1,6 +1,5 @@
 package com.daviancorp.framework.implementation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -10,15 +9,26 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.View;
 
+import com.daviancorp.android.tiletapper.R;
 import com.daviancorp.framework.Audio;
 import com.daviancorp.framework.FileIO;
-import com.daviancorp.framework.Game;
+import com.daviancorp.framework.GameFramework;
 import com.daviancorp.framework.Graphics;
 import com.daviancorp.framework.Input;
 import com.daviancorp.framework.Screen;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
 
-public abstract class AndroidGame extends Activity implements Game {
+
+public abstract class AndroidGame extends BaseGameActivity 
+	implements GameFramework, View.OnClickListener {
+	
+	 // request codes we use when invoking an external activity
+    final int RC_RESOLVE = 5000, RC_UNUSED = 5001;
+	
     AndroidFastRenderView renderView;
     Graphics graphics;
     Audio audio;
@@ -30,7 +40,13 @@ public abstract class AndroidGame extends Activity implements Game {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
+        // My edit
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
+        //
+        
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -108,6 +124,65 @@ public abstract class AndroidGame extends Activity implements Game {
         screen.update(0);
         this.screen = screen;
     }
+    
+    // My edit
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.sign_in_button) {
+            // start the asynchronous sign in flow
+            beginUserInitiatedSignIn();
+        }
+        else if (view.getId() == R.id.sign_out_button) {
+            // sign out.
+            signOut();
+
+            // show sign-in button, hide the sign-out button
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+        }
+    }
+    
+    @Override
+	public void onSignInSucceeded() {
+        // show sign-out button, hide the sign-in button
+        findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+        findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+
+        // (your code here: update UI, enable functionality that depends on sign in, etc)
+    }
+    
+    @Override
+	public void onSignInFailed() {
+        // Sign in has failed. So show the user the sign-in button.
+        findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onShowAchievementsRequested() {
+        if (isSignedIn()) {
+            startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()),
+                    RC_UNUSED);
+        } else {
+            showAlert(getString(R.string.achievements_not_available));
+        }
+    }
+
+    @Override
+    public void onShowLeaderboardsRequested() {
+        if (isSignedIn()) {
+            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()),
+                    RC_UNUSED);
+        } else {
+            showAlert(getString(R.string.leaderboards_not_available));
+        }
+    }
+    
+    @Override
+    public GoogleApiClient getApi() {
+    	return getApiClient();
+    }
+    //
     
     public Screen getCurrentScreen() {
 

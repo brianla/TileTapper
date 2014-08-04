@@ -1,6 +1,8 @@
 package com.daviancorp.framework;
 
-public interface Game {
+import com.google.android.gms.common.api.GoogleApiClient;
+
+public interface GameFramework {
 
     public Audio getAudio();
 
@@ -15,4 +17,10 @@ public interface Game {
     public Screen getCurrentScreen();
 
     public Screen getInitScreen();
+    
+    public void onShowAchievementsRequested();
+    
+    public void onShowLeaderboardsRequested();
+    
+    public GoogleApiClient getApi();
 }

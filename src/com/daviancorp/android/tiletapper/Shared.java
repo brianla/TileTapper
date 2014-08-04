@@ -1,6 +1,9 @@
 package com.daviancorp.android.tiletapper;
 
-import android.util.Log;
+import android.content.Context;
+
+import com.daviancorp.framework.GameFramework;
+import com.google.android.gms.games.Games;
 
 /* Singleton Class */
 public final class Shared {
@@ -13,6 +16,7 @@ public final class Shared {
 	
 	private static Shared instance = null;
 	
+	private GameFramework game;
 	private GameSave gameSave;
 	private int easyHS, mediumHS, hardHS, insaneHS;
 	private int mode;
@@ -29,6 +33,14 @@ public final class Shared {
 		return instance;
 	}
 	
+	public GameFramework getGame() {
+		return game;
+	}
+
+	public void setGame(GameFramework game) {
+		this.game = game;
+	}
+
 	public GameSave getGameSave() {
 		return gameSave;
 	}
@@ -150,29 +162,64 @@ public final class Shared {
 		switch (mode) {
 		case EASY:
 			if (score > easyHS) {
+				Games.Leaderboards.submitScore(game.getApi(), 
+						((Context) game).getString(R.string.leaderboard_easy_mode), score);
 				easyHS = score;
 				saveGame();
 			}
 			break;
 		case MEDIUM:
 			if (score > mediumHS) {
+				Games.Leaderboards.submitScore(game.getApi(), 
+						((Context) game).getString(R.string.leaderboard_medium_mode), score);
 				mediumHS = score;
 				saveGame();
 			}
 			break;
 		case HARD:
 			if (score > hardHS) {
+				Games.Leaderboards.submitScore(game.getApi(), 
+						((Context) game).getString(R.string.leaderboard_hard_mode), score);
 				hardHS = score;
 				saveGame();
 			}
 			break;
 		case INSANE:
 			if (score > insaneHS) {
+				Games.Leaderboards.submitScore(game.getApi(), 
+						((Context) game).getString(R.string.leaderboard_insane_mode), score);
 				insaneHS = score;
 				saveGame();
 			}
 			break;
 		}
+		
+//		switch (mode) {
+//		case EASY:
+//			if (score > easyHS) {
+//				easyHS = score;
+//				saveGame();
+//			}
+//			break;
+//		case MEDIUM:
+//			if (score > mediumHS) {
+//				mediumHS = score;
+//				saveGame();
+//			}
+//			break;
+//		case HARD:
+//			if (score > hardHS) {
+//				hardHS = score;
+//				saveGame();
+//			}
+//			break;
+//		case INSANE:
+//			if (score > insaneHS) {
+//				insaneHS = score;
+//				saveGame();
+//			}
+//			break;
+//		}
 	}
 	
 	/* Save game info to system

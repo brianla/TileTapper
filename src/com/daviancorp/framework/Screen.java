@@ -1,9 +1,9 @@
 package com.daviancorp.framework;
 
 public abstract class Screen {
-    protected final Game game;
+    protected final GameFramework game;
 
-    public Screen(Game game) {
+    public Screen(GameFramework game) {
         this.game = game;
     }
 

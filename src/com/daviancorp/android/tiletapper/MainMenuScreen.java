@@ -8,11 +8,13 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import com.daviancorp.android.tiletapper.GameScreen.GameState;
-import com.daviancorp.framework.Game;
+import com.daviancorp.framework.GameFramework;
 import com.daviancorp.framework.Graphics;
 import com.daviancorp.framework.Image;
 import com.daviancorp.framework.Input.TouchEvent;
 import com.daviancorp.framework.Screen;
+import com.daviancorp.framework.implementation.AndroidGame;
+import com.google.android.gms.games.Games;
 
 public class MainMenuScreen extends Screen {
 	enum HomeState {
@@ -31,12 +33,13 @@ public class MainMenuScreen extends Screen {
 	private Shared shared;
 	private Paint paint;
 
-	public MainMenuScreen(Game game) {
+	public MainMenuScreen(GameFramework game) {
 		super(game);
 		
 		switchUpdate = true;
 		shared = Shared.getInstance();
-
+		
+		shared.setGame(game);
 		shared.setGameSave(new GameSave((Context) game, Assets.FILENAME));
 		shared.setEasyHS(shared.getGameSave().loadEasyHighScore());
 		shared.setMediumHS(shared.getGameSave().loadMediumHighScore());
@@ -87,8 +90,10 @@ public class MainMenuScreen extends Screen {
 						
 						// Pressed High Scores button
 						else if (inBounds(event, 150, 1000, 500, 150)) {
-							state = HomeState.Highscore;
-							switchUpdate = false;
+							game.onShowLeaderboardsRequested();
+							
+//							state = HomeState.Highscore;
+//							switchUpdate = false;
 						}
 					}
 				} 

@@ -6,7 +6,7 @@ import java.util.Random;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.daviancorp.framework.Game;
+import com.daviancorp.framework.GameFramework;
 import com.daviancorp.framework.Graphics;
 import com.daviancorp.framework.Image;
 import com.daviancorp.framework.Input.TouchEvent;
@@ -69,6 +69,8 @@ public class GameScreen extends Screen {
 	private static final int ORANGE_COLOR = 0xffff8a00;
 	
 	// Variable Setup
+	private GameFramework game;
+	
 	private Image black_tile, white_tile, red_tile, yellow_tile, orange_tile;
 	private Image black_tile_1, black_tile_2, black_tile_3, black_tile_4,
 			black_tile_5, black_tile_6, black_tile_7, black_tile_8, black_tile_9,
@@ -91,8 +93,9 @@ public class GameScreen extends Screen {
 	private Shared shared;		// Shared variables/methods
 	private Paint paint, paint2, paint3, paint4;
 
-	public GameScreen(Game game) {
+	public GameScreen(GameFramework game) {
 		super(game);
+		this.game = game;
 
 		// Initialize game objects here
 		black_tile = Assets.black_tile;

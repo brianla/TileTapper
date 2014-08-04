@@ -1,12 +1,12 @@
 package com.daviancorp.android.tiletapper;
 
-import com.daviancorp.framework.Game;
+import com.daviancorp.framework.GameFramework;
 import com.daviancorp.framework.Graphics;
 import com.daviancorp.framework.Graphics.ImageFormat;
 import com.daviancorp.framework.Screen;
 
 public class SplashLoadingScreen extends Screen {
-    public SplashLoadingScreen(Game game) {
+    public SplashLoadingScreen(GameFramework game) {
         super(game);
     }
 
