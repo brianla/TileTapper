@@ -158,34 +158,7 @@ public final class Shared {
 	/* Check if score beats high score
 	 */
 	public void checkScore(int score) {
-		game.leaderboardScore(mode, score);
-		
-		switch (mode) {
-		case EASY:		
-			if (score > easyHS) {
-				easyHS = score;
-				saveGame();
-			}
-			break;
-		case MEDIUM:
-			if (score > mediumHS) {
-				mediumHS = score;
-				saveGame();
-			}
-			break;
-		case HARD:
-			if (score > hardHS) {
-				hardHS = score;
-				saveGame();
-			}
-			break;
-		case INSANE:
-			if (score > insaneHS) {
-				insaneHS = score;
-				saveGame();
-			}
-			break;
-		}
+		game.onEnteredScore(mode, score);
 		
 //		switch (mode) {
 //		case EASY:

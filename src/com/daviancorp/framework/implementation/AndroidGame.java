@@ -43,6 +43,8 @@ public abstract class AndroidGame extends BaseGameActivity
     FileIO fileIO;
     Screen screen;
     WakeLock wakeLock;
+    
+	AccomplishmentsOutbox mOutbox = new AccomplishmentsOutbox();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,8 @@ public abstract class AndroidGame extends BaseGameActivity
         
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MyGame");
+        
+        mOutbox.loadLocal(this);
     }
 
     @Override
@@ -153,6 +157,12 @@ public abstract class AndroidGame extends BaseGameActivity
         screen.resume();
         screen.update(0);
         this.screen = screen;
+    }
+    
+    
+    public Screen getCurrentScreen() {
+
+        return screen;
     }
     
     // My edit
@@ -211,32 +221,132 @@ public abstract class AndroidGame extends BaseGameActivity
     }
     
     @Override
-    public void leaderboardScore(int mode, int score) {
-    	if (isSignedIn()) {
-    		String s = "";
-    		
+    public void onEnteredScore(int mode, int score) {
+    
+        // check for achievements
+        checkForAchievements(mode, score);
+
+        // update leaderboards
+        updateLeaderboards(mode, score);
+
+        // push those accomplishments to the cloud, if signed in
+        pushAccomplishments();
+    }
+
+    private void checkForAchievements(int mode, int score) {
+        // Check if each condition is met; if so, unlock the corresponding
+        // achievement.
+    	if (score > 200) {
     		switch (mode) {
 	    		case Shared.EASY:
-	    			s = getString(R.string.leaderboard_easy_mode);
+	    			mOutbox.mNewbieAchievement = true;
 	    			break;
-	    		case Shared.MEDIUM:
-	    			s = getString(R.string.leaderboard_medium_mode);
-	    			break;
-	    		case Shared.HARD:
-	    			s = getString(R.string.leaderboard_hard_mode);
-	    			break;
-	    		case Shared.INSANE:
-	    			s = getString(R.string.leaderboard_insane_mode);
-	    			break;
+				case Shared.MEDIUM:
+					mOutbox.mCasualAchievement = true;
+					break;
+				case Shared.HARD:
+					mOutbox.mHardcoreAchievement = true;
+					break;
+				case Shared.INSANE:
+					mOutbox.mProAchievement = true;
+					break;
     		}
-    		
-    		Games.Leaderboards.submitScore(getApiClient(), s, score);
     	}
     }
-    //
     
-    public Screen getCurrentScreen() {
+    private void updateLeaderboards(int mode, int score) {
+    	 if (mode == Shared.EASY && mOutbox.mEasyModeScore < score) {
+             mOutbox.mEasyModeScore = score;
+    	 }
+         else if (mode == Shared.MEDIUM && mOutbox.mMediumModeScore < score) {
+             mOutbox.mMediumModeScore = score;
+    	 }
+         else if (mode == Shared.HARD && mOutbox.mHardModeScore < score) {
+             mOutbox.mHardModeScore = score;
+    	 }
+         else if (mode == Shared.INSANE && mOutbox.mInsaneModeScore < score) {
+             mOutbox.mInsaneModeScore = score; 
+    	 }
+    }
+    
+    private void pushAccomplishments() {
+        if (!isSignedIn()) {
+            // can't push to the cloud, so save locally
+            mOutbox.saveLocal(this);
+            return;
+        }
+        
+        // Achievements
+        if (mOutbox.mNewbieAchievement) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_newbie));
+            mOutbox.mNewbieAchievement = false;
+        }
+        if (mOutbox.mCasualAchievement) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_casual));
+            mOutbox.mCasualAchievement = false;
+        }
+        if (mOutbox.mHardcoreAchievement) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_hardcore));
+            mOutbox.mHardcoreAchievement = false;
+        }
+        if (mOutbox.mProAchievement) {
+            Games.Achievements.unlock(getApiClient(), getString(R.string.achievement_pro));
+            mOutbox.mProAchievement = false;
+        }
+        Games.Achievements.increment(getApiClient(), getString(R.string.achievement_having_fun), 1);
+        
+        // Leaderboards
+        if (mOutbox.mEasyModeScore >= 0) {
+            Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_easy_mode),
+                    mOutbox.mEasyModeScore);
+            mOutbox.mEasyModeScore = -1;
+        }
+        if (mOutbox.mMediumModeScore >= 0) {
+            Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_medium_mode),
+                    mOutbox.mMediumModeScore);
+            mOutbox.mMediumModeScore = -1;
+        }
+        if (mOutbox.mHardModeScore >= 0) {
+            Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_hard_mode),
+                    mOutbox.mHardModeScore);
+            mOutbox.mHardModeScore = -1;
+        }
+        if (mOutbox.mInsaneModeScore >= 0) {
+            Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_insane_mode),
+                    mOutbox.mInsaneModeScore);
+            mOutbox.mInsaneModeScore = -1;
+        }
+        mOutbox.saveLocal(this);
+    }
 
-        return screen;
+    
+    class AccomplishmentsOutbox {
+        boolean mNewbieAchievement = false;
+        boolean mCasualAchievement = false;
+        boolean mHardcoreAchievement = false;
+        boolean mProAchievement = false;
+        boolean mHavingFunAchievement = false;
+        int mEasyModeScore = -1;
+        int mMediumModeScore = -1;
+        int mHardModeScore = -1;
+        int mInsaneModeScore = -1;
+
+        boolean isEmpty() {
+            return !mNewbieAchievement && !mCasualAchievement && !mHardcoreAchievement &&
+                    !mProAchievement && mHavingFunAchievement && mEasyModeScore < 0 && 
+                    mMediumModeScore < 0 && mHardModeScore < 0 && mInsaneModeScore < 0;
+        }
+
+        public void saveLocal(Context ctx) {
+            /* TODO: This is left as an exercise. To make it more difficult to cheat,
+             * this data should be stored in an encrypted file! And remember not to
+             * expose your encryption key (obfuscate it by building it from bits and
+             * pieces and/or XORing with another string, for instance). */
+        }
+
+        public void loadLocal(Context ctx) {
+            /* TODO: This is left as an exercise. Write code here that loads data
+             * from the file you wrote in saveLocal(). */
+        }
     }
 }

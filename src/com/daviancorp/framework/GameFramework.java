@@ -21,6 +21,6 @@ public interface GameFramework {
     public void onShowAchievementsRequested();
     
     public void onShowLeaderboardsRequested();
-    
-    public void leaderboardScore(int mode, int score);
+
+	public void onEnteredScore(int mode, int score);
 }
