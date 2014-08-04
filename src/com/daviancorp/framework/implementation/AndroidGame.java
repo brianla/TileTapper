@@ -1,7 +1,5 @@
 package com.daviancorp.framework.implementation;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -27,7 +25,6 @@ import com.daviancorp.framework.Graphics;
 import com.daviancorp.framework.Input;
 import com.daviancorp.framework.Screen;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
@@ -197,7 +194,8 @@ public abstract class AndroidGame extends BaseGameActivity
             startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()),
                     RC_UNUSED);
         } else {
-            showAlert(getString(R.string.achievements_not_available));
+        	beginUserInitiatedSignIn();
+//            showAlert(getString(R.string.achievements_not_available));
         }
     }
 
@@ -207,7 +205,8 @@ public abstract class AndroidGame extends BaseGameActivity
             startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(getApiClient()),
                     RC_UNUSED);
         } else {
-            showAlert(getString(R.string.leaderboards_not_available));
+        	beginUserInitiatedSignIn();
+ //           showAlert(getString(R.string.leaderboards_not_available));
         }
     }
     

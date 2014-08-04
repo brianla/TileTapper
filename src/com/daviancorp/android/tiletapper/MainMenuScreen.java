@@ -78,19 +78,27 @@ public class MainMenuScreen extends Screen {
 				if (switchUpdate) {
 					if (event.type == TouchEvent.TOUCH_UP) {
 						// Pressed Play button
-						if (inBounds(event, 250, 700, 300, 150)) {
+						if (inBounds(event, 250, 600, 300, 150)) {
 							game.setScreen(new GameScreen(game));
 						}
 	
 						// Pressed Options button
-						else if (inBounds(event, 200, 850, 400, 150)) {
+						else if (inBounds(event, 200, 750, 400, 150)) {
 							state = HomeState.Option;
 							switchUpdate = false;
 						}
 						
-						// Pressed High Scores button
-						else if (inBounds(event, 150, 1000, 500, 150)) {
+						// Pressed Leaderboards button
+						else if (inBounds(event, 150, 900, 500, 150)) {
 							game.onShowLeaderboardsRequested();
+							
+//							state = HomeState.Highscore;
+//							switchUpdate = false;
+						}
+						
+						// Pressed Achievements button
+						else if (inBounds(event, 150, 1050, 500, 150)) {
+							game.onShowAchievementsRequested();
 							
 //							state = HomeState.Highscore;
 //							switchUpdate = false;
@@ -204,9 +212,10 @@ public class MainMenuScreen extends Screen {
 		paint.setTextSize(100);
 		paint.setColor(TEXT_COLOR);
 		
-		g.drawString("Play", 400, 800, paint);
-		g.drawString("Options", 400, 950, paint);
-		g.drawString("High Scores", 400, 1100, paint);
+		g.drawString("Play", 400, 700, paint);
+		g.drawString("Options", 400, 850, paint);
+		g.drawString("Leaderboards", 400, 1000, paint);
+		g.drawString("Achievements", 400, 1150, paint);
 
 		// TODO
 //		 g.drawRect(250, 700, 300, 150, Color.argb(100, 50, 0, 0));
