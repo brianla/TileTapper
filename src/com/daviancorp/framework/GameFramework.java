@@ -17,10 +17,10 @@ public interface GameFramework {
     public Screen getCurrentScreen();
 
     public Screen getInitScreen();
-    
+        
     public void onShowAchievementsRequested();
     
     public void onShowLeaderboardsRequested();
     
-    public GoogleApiClient getApi();
+    public void leaderboardScore(int mode, int score);
 }

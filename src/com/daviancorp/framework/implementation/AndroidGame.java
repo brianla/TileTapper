@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.daviancorp.android.tiletapper.R;
+import com.daviancorp.android.tiletapper.Shared;
 import com.daviancorp.framework.Audio;
 import com.daviancorp.framework.FileIO;
 import com.daviancorp.framework.GameFramework;
@@ -211,8 +212,27 @@ public abstract class AndroidGame extends BaseGameActivity
     }
     
     @Override
-    public GoogleApiClient getApi() {
-    	return getApiClient();
+    public void leaderboardScore(int mode, int score) {
+    	if (isSignedIn()) {
+    		String s = "";
+    		
+    		switch (mode) {
+	    		case Shared.EASY:
+	    			s = getString(R.string.leaderboard_easy_mode);
+	    			break;
+	    		case Shared.MEDIUM:
+	    			s = getString(R.string.leaderboard_medium_mode);
+	    			break;
+	    		case Shared.HARD:
+	    			s = getString(R.string.leaderboard_hard_mode);
+	    			break;
+	    		case Shared.INSANE:
+	    			s = getString(R.string.leaderboard_insane_mode);
+	    			break;
+    		}
+    		
+    		Games.Leaderboards.submitScore(getApiClient(), s, score);
+    	}
     }
     //
     

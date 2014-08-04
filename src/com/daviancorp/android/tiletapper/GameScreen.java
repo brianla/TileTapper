@@ -305,7 +305,7 @@ public class GameScreen extends Screen {
 									Assets.lose.play(0.15f);
 								}
 								
-								if(isHighScore) shared.checkScore(score);
+								shared.checkScore(score);
 							}
 						}
 					}
@@ -345,7 +345,7 @@ public class GameScreen extends Screen {
 							Assets.lose.play(0.15f);
 						}
 						
-						if(isHighScore) shared.checkScore(score);
+						shared.checkScore(score);
 					}
 					else if ((tile.getType() == Tile.RED) || (tile.getType() == Tile.ORANGE)) {
 						changeTile(r, c, Tile.WHITE);

@@ -1,9 +1,8 @@
 package com.daviancorp.android.tiletapper;
 
-import android.content.Context;
+import android.util.Log;
 
 import com.daviancorp.framework.GameFramework;
-import com.google.android.gms.games.Games;
 
 /* Singleton Class */
 public final class Shared {
@@ -159,35 +158,29 @@ public final class Shared {
 	/* Check if score beats high score
 	 */
 	public void checkScore(int score) {
+		game.leaderboardScore(mode, score);
+		
 		switch (mode) {
-		case EASY:
+		case EASY:		
 			if (score > easyHS) {
-				Games.Leaderboards.submitScore(game.getApi(), 
-						((Context) game).getString(R.string.leaderboard_easy_mode), score);
 				easyHS = score;
 				saveGame();
 			}
 			break;
 		case MEDIUM:
 			if (score > mediumHS) {
-				Games.Leaderboards.submitScore(game.getApi(), 
-						((Context) game).getString(R.string.leaderboard_medium_mode), score);
 				mediumHS = score;
 				saveGame();
 			}
 			break;
 		case HARD:
 			if (score > hardHS) {
-				Games.Leaderboards.submitScore(game.getApi(), 
-						((Context) game).getString(R.string.leaderboard_hard_mode), score);
 				hardHS = score;
 				saveGame();
 			}
 			break;
 		case INSANE:
 			if (score > insaneHS) {
-				Games.Leaderboards.submitScore(game.getApi(), 
-						((Context) game).getString(R.string.leaderboard_insane_mode), score);
 				insaneHS = score;
 				saveGame();
 			}
