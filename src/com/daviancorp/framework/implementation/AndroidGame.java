@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.daviancorp.android.tiletapper.Assets;
+import com.daviancorp.android.tiletapper.GameSave;
 import com.daviancorp.android.tiletapper.R;
 import com.daviancorp.android.tiletapper.Shared;
 import com.daviancorp.framework.Audio;
@@ -229,44 +231,86 @@ public abstract class AndroidGame extends BaseGameActivity
         // update leaderboards
         updateLeaderboards(mode, score);
 
+        mOutbox.saveLocal(this);
+        
         // push those accomplishments to the cloud, if signed in
-        pushAccomplishments();
+        //pushAccomplishments();
     }
 
     private void checkForAchievements(int mode, int score) {
         // Check if each condition is met; if so, unlock the corresponding
         // achievement.
-    	if (score > 200) {
-    		switch (mode) {
-	    		case Shared.EASY:
-	    			mOutbox.mNewbieAchievement = true;
-	    			break;
-				case Shared.MEDIUM:
-					mOutbox.mCasualAchievement = true;
-					break;
-				case Shared.HARD:
-					mOutbox.mHardcoreAchievement = true;
-					break;
-				case Shared.INSANE:
-					mOutbox.mProAchievement = true;
-					break;
+    	if (isSignedIn()) {
+    		Games.Achievements.increment(getApiClient(), 
+    				getString(R.string.achievement_having_fun), 1);
+    		
+    		if (score > 200) {
+	    		switch (mode) {
+		    		case Shared.EASY:
+		    			if (!mOutbox.mNewbieAchievement) {
+			    			mOutbox.mNewbieAchievement = true;
+			    			Games.Achievements.unlock(getApiClient(), 
+			    					getString(R.string.achievement_newbie));
+		    			}
+		    			break;
+					case Shared.MEDIUM:
+		    			if (!mOutbox.mCasualAchievement) {
+			    			mOutbox.mCasualAchievement = true;
+			    			Games.Achievements.unlock(getApiClient(), 
+			    					getString(R.string.achievement_casual));
+		    			}
+						break;
+					case Shared.HARD:
+		    			if (!mOutbox.mHardcoreAchievement) {
+			    			mOutbox.mHardcoreAchievement = true;
+			    			Games.Achievements.unlock(getApiClient(), 
+			    					getString(R.string.achievement_hardcore));
+		    			}
+						break;
+					case Shared.INSANE:
+		    			if (!mOutbox.mProAchievement) {
+			    			mOutbox.mProAchievement = true;
+			    			Games.Achievements.unlock(getApiClient(), 
+			    					getString(R.string.achievement_pro));
+		    			}
+						break;
+	    		}
     		}
     	}
     }
     
     private void updateLeaderboards(int mode, int score) {
-    	 if (mode == Shared.EASY && mOutbox.mEasyModeScore < score) {
-             mOutbox.mEasyModeScore = score;
-    	 }
-         else if (mode == Shared.MEDIUM && mOutbox.mMediumModeScore < score) {
-             mOutbox.mMediumModeScore = score;
-    	 }
-         else if (mode == Shared.HARD && mOutbox.mHardModeScore < score) {
-             mOutbox.mHardModeScore = score;
-    	 }
-         else if (mode == Shared.INSANE && mOutbox.mInsaneModeScore < score) {
-             mOutbox.mInsaneModeScore = score; 
-    	 }
+    	
+    	switch(mode) {
+    		case Shared.EASY:
+            	Games.Leaderboards.submitScore(getApiClient(), 
+            			getString(R.string.leaderboard_easy_mode), score);
+            	if (mOutbox.mEasyModeScore < score) {
+        			mOutbox.mEasyModeScore = score;
+        		}
+            	break;
+    		case Shared.MEDIUM:
+            	Games.Leaderboards.submitScore(getApiClient(), 
+            			getString(R.string.leaderboard_medium_mode), score);
+            	if (mOutbox.mMediumModeScore < score) {
+        			mOutbox.mMediumModeScore = score;
+        		}
+            	break;
+    		case Shared.HARD:
+            	Games.Leaderboards.submitScore(getApiClient(), 
+            			getString(R.string.leaderboard_hard_mode), score);
+            	if (mOutbox.mHardModeScore < score) {
+        			mOutbox.mHardModeScore = score;
+        		}
+            	break;
+    		case Shared.INSANE:
+            	Games.Leaderboards.submitScore(getApiClient(), 
+            			getString(R.string.leaderboard_insane_mode), score);
+            	if (mOutbox.mInsaneModeScore < score) {
+        			mOutbox.mInsaneModeScore = score;
+        		}
+            	break;
+    	}
     }
     
     private void pushAccomplishments() {
@@ -342,11 +386,57 @@ public abstract class AndroidGame extends BaseGameActivity
              * this data should be stored in an encrypted file! And remember not to
              * expose your encryption key (obfuscate it by building it from bits and
              * pieces and/or XORing with another string, for instance). */
+        	Shared shared = Shared.getInstance();
+    		
+        	shared.setEasyHS(mEasyModeScore);
+    		shared.setMediumHS(mMediumModeScore);
+    		shared.setHardHS(mHardModeScore);
+    		shared.setInsaneHS(mInsaneModeScore);
+    		
+    		shared.setNewbie(mNewbieAchievement);
+    		shared.setCasual(mCasualAchievement);
+    		shared.setHardcore(mHardcoreAchievement);
+    		shared.setPro(mProAchievement);
+    		shared.setHavingFun(mHavingFunAchievement);
+    		
+    		shared.saveGame();
         }
 
         public void loadLocal(Context ctx) {
             /* TODO: This is left as an exercise. Write code here that loads data
              * from the file you wrote in saveLocal(). */
+        	
+        	Shared shared = Shared.getInstance();
+        	
+    		shared.setGame(AndroidGame.this);
+    		shared.setGameSave(new GameSave((Context) AndroidGame.this, Assets.FILENAME));
+    		
+    		GameSave gamesave = shared.getGameSave();
+    		
+    		shared.setEasyHS(gamesave.loadEasyHighScore());
+    		shared.setMediumHS(gamesave.loadMediumHighScore());
+    		shared.setHardHS(gamesave.loadHardHighScore());
+    		shared.setInsaneHS(gamesave.loadInsaneHighScore());
+    		shared.setMode(gamesave.loadMode());
+    		shared.setMusicOn(gamesave.loadMusicOption());
+    		shared.setSoundOn(gamesave.loadSoundOption());
+    		
+    		shared.setNewbie(gamesave.loadAchievementNewbie());
+    		shared.setCasual(gamesave.loadAchievementCasual());
+    		shared.setHardcore(gamesave.loadAchievementHardcore());
+    		shared.setPro(gamesave.loadAchievementPro());
+    		shared.setHavingFun(gamesave.loadAchievementHavingFun());
+    		
+    		mNewbieAchievement = shared.isNewbie();
+    		mCasualAchievement = shared.isCasual();
+    		mHardcoreAchievement = shared.isHardcore();
+    		mProAchievement = shared.isPro();
+    		mHavingFunAchievement = shared.isHavingFun();
+    		
+    		mEasyModeScore = shared.getEasyHS();
+    		mMediumModeScore = shared.getMediumHS();
+    		mHardModeScore = shared.getHardHS();
+    		mInsaneModeScore = shared.getInsaneHS();
         }
     }
 }

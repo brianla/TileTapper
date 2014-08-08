@@ -38,16 +38,6 @@ public class MainMenuScreen extends Screen {
 		
 		switchUpdate = true;
 		shared = Shared.getInstance();
-		
-		shared.setGame(game);
-		shared.setGameSave(new GameSave((Context) game, Assets.FILENAME));
-		shared.setEasyHS(shared.getGameSave().loadEasyHighScore());
-		shared.setMediumHS(shared.getGameSave().loadMediumHighScore());
-		shared.setHardHS(shared.getGameSave().loadHardHighScore());
-		shared.setInsaneHS(shared.getGameSave().loadInsaneHighScore());
-		shared.setMode(shared.getGameSave().loadMode());
-		shared.setMusicOn(shared.getGameSave().loadMusicOption());
-		shared.setSoundOn(shared.getGameSave().loadSoundOption());
 		shared.getMusic();
 		
 		paint = new Paint();

@@ -20,6 +20,7 @@ public final class Shared {
 	private int easyHS, mediumHS, hardHS, insaneHS;
 	private int mode;
 	private boolean musicOn, soundOn;
+	private boolean aNewbie, aCasual, aHardcore, aPro, aHavingFun;
 	
 	private Shared() {
 		
@@ -102,6 +103,46 @@ public final class Shared {
 
 	public void setSoundOn(boolean soundOn) {
 		this.soundOn = soundOn;
+	}
+
+	public boolean isNewbie() {
+		return aNewbie;
+	}
+
+	public void setNewbie(boolean aNewbie) {
+		this.aNewbie = aNewbie;
+	}
+
+	public boolean isCasual() {
+		return aCasual;
+	}
+
+	public void setCasual(boolean aCasual) {
+		this.aCasual = aCasual;
+	}
+
+	public boolean isHardcore() {
+		return aHardcore;
+	}
+
+	public void setHardcore(boolean aHardcore) {
+		this.aHardcore = aHardcore;
+	}
+
+	public boolean isPro() {
+		return aPro;
+	}
+
+	public void setPro(boolean aPro) {
+		this.aPro = aPro;
+	}
+
+	public boolean isHavingFun() {
+		return aHavingFun;
+	}
+
+	public void setHavingFun(boolean aHavingFun) {
+		this.aHavingFun = aHavingFun;
 	}
 
 	/* Get the info for muted/unmuted music
@@ -192,7 +233,8 @@ public final class Shared {
 	 */
 	public boolean saveGame() {
 		try {
-			gameSave.saveGame(easyHS, mediumHS, hardHS, insaneHS, mode, musicOn, soundOn);
+			gameSave.saveGame(easyHS, mediumHS, hardHS, insaneHS, mode, musicOn, soundOn,
+					aNewbie, aCasual, aHardcore, aPro, aHavingFun);
 			return true;
 		} catch (Exception e) {
 			return false;

@@ -20,12 +20,19 @@ public class GameSave extends JSONSerializer {
 	private static final String JSON_MUSIC_OPTION = "music_option";
 	private static final String JSON_SOUND_OPTION = "sound_option";
 	
+	private static final String JSON_A_NEWBIE = "newbie_achievement";
+	private static final String JSON_A_CASUAL = "casual_achievement";
+	private static final String JSON_A_HARDCORE = "hardcore_achievement";
+	private static final String JSON_A_PRO = "pro_achievement";
+	private static final String JSON_A_HAVING_FUN = "having_fun_achievement";
+	
 	public GameSave(Context c, String f) {
 		super(c, f);
 	}
 	
 	public void saveGame(int easyHS, int mediumHS, int hardHS, int insaneHS, int mode, 
-			boolean music, boolean sound)
+			boolean music, boolean sound, boolean aNewbie, boolean aCasual, 
+			boolean aHardcore, boolean aPro, boolean aHavingFun)
 		throws JSONException, IOException {
 		
 		// Build an array in JSON
@@ -38,6 +45,12 @@ public class GameSave extends JSONSerializer {
 		json.put(JSON_MODE, mode);
 		json.put(JSON_MUSIC_OPTION, music);
 		json.put(JSON_SOUND_OPTION, sound);
+		
+		json.put(JSON_A_NEWBIE, aNewbie);
+		json.put(JSON_A_CASUAL, aCasual);
+		json.put(JSON_A_HARDCORE, aHardcore);
+		json.put(JSON_A_PRO, aPro);
+		json.put(JSON_A_HAVING_FUN, aHavingFun);
 		
 		JSONArray array = new JSONArray();
 		array.put(json);
@@ -123,6 +136,61 @@ public class GameSave extends JSONSerializer {
 		}
 		catch (Exception e) {
 			return true;
+		}
+	}
+	
+	public boolean loadAchievementNewbie() {
+		try {
+			JSONArray array = super.load();
+			boolean aNewbie = array.getJSONObject(0).getBoolean(JSON_A_NEWBIE);
+			return aNewbie;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public boolean loadAchievementCasual() {
+		try {
+			JSONArray array = super.load();
+			boolean aCasual = array.getJSONObject(0).getBoolean(JSON_A_CASUAL);
+			return aCasual;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public boolean loadAchievementHardcore() {
+		try {
+			JSONArray array = super.load();
+			boolean aHardcore = array.getJSONObject(0).getBoolean(JSON_A_HARDCORE);
+			return aHardcore;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public boolean loadAchievementPro() {
+		try {
+			JSONArray array = super.load();
+			boolean aPro = array.getJSONObject(0).getBoolean(JSON_A_PRO);
+			return aPro;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public boolean loadAchievementHavingFun() {
+		try {
+			JSONArray array = super.load();
+			boolean aHavingFun = array.getJSONObject(0).getBoolean(JSON_A_HAVING_FUN);
+			return aHavingFun;
+		}
+		catch (Exception e) {
+			return false;
 		}
 	}
 }

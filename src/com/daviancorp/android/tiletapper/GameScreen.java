@@ -29,6 +29,8 @@ public class GameScreen extends Screen {
 	private static final int WIDTH_GAP = 20;
 	private static final int HEIGHT_GAP = 20;
 
+	private static final int START_DELAY = 80;
+	
 	/* Difficulty Speed */
 //	private static final int SPEED_VAR_EASY = 25;
 //	private static final int SPEED_MIN_EASY = 25;
@@ -39,6 +41,7 @@ public class GameScreen extends Screen {
 //	private static final int SPEED_MIN_MEDIUM = 20;
 //	private static final float TILE_DURATION_MEDIUM  = 45;
 //	private static final int ANIM_SPEED_MEDIUM = 45;
+
 	
 	private static final int SPEED_VAR_EASY = 35;
 	private static final int SPEED_MIN_EASY = 35;
@@ -62,7 +65,7 @@ public class GameScreen extends Screen {
 	/* */
 	
 	private static final int RED_TO_BLACK = 20;
-	private static final int SPAWN_TWO_CHANCE = 20;
+//	private static final int SPAWN_TWO_CHANCE = 20;
 	private static final int FRAME_LENGTH = 100;
 
 	private static final int TEXT_COLOR = 0xff6B6564;
@@ -124,9 +127,6 @@ public class GameScreen extends Screen {
 		black_tile_16 = Assets.black_tile_16;
 		black_tile_17 = Assets.black_tile_17;
 		
-		tiles = new Tile[NUM_ROWS][NUM_COLUMNS];
-		animations = new Animation[NUM_ROWS][NUM_COLUMNS];
-		
 		width = black_tile.getWidth();
 		height = black_tile.getHeight();
 		
@@ -162,6 +162,12 @@ public class GameScreen extends Screen {
 
 	public void newGame() {
 		score = 0;
+		
+		tiles = null;
+		animations = null;
+
+		tiles = new Tile[NUM_ROWS][NUM_COLUMNS];
+		animations = new Animation[NUM_ROWS][NUM_COLUMNS];
 		
 		switch(shared.getMode()) {
 		case Shared.EASY:
@@ -211,7 +217,7 @@ public class GameScreen extends Screen {
 			}
 		}
 		
-		timer = speed_min + speed_var * rand.nextFloat();
+		timer = START_DELAY;
 	}
 
 	@Override
